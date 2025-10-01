@@ -27,10 +27,13 @@ ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # твой chat_id (узн
 OWM_API_KEY = os.getenv("OWM_API_KEY")
 
 # OWM (погода)
-config_dict = get_default_config()
-config_dict["language"] = "ru"
-owm = OWM(OWM_API_KEY, config_dict)
-mgr = owm.weather_manager()
+if not OWM_API_KEY:
+    print("⚠️ OWM_API_KEY не задан, команда /weather не будет работать")
+else:
+    config_dict = get_default_config()
+    config_dict["language"] = "ru"
+    owm = OWM(OWM_API_KEY, config_dict)
+    mgr = owm.weather_manager()
 
 logging.basicConfig(level=logging.INFO)
 
