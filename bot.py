@@ -20,15 +20,16 @@ from pyowm import OWM
 from pyowm.utils.config import get_default_config
 
 # --- НАСТРОЙКИ ---
-BOT_TOKEN = "7095220207:AAGbyb_Wz1qQJnEQzCN_RARB2K01srXcrRQ"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-SPREADSHEET_ID = "1tEkPxovVUmi3HwwnG-92LmsSB9RhqYczh_jrmlY-7KU"
-ADMIN_CHAT_ID = 953797157  # укажи свой chat_id (узнать можно через @userinfobot)
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # твой chat_id (узнается через /id)
+OWM_API_KEY = os.getenv("OWM_API_KEY")
 
 # OWM (погода)
 config_dict = get_default_config()
 config_dict["language"] = "ru"
-owm = OWM("ТВОЙ_OWM_API_KEY", config_dict)
+owm = OWM(OWM_API_KEY, config_dict)
 mgr = owm.weather_manager()
 
 logging.basicConfig(level=logging.INFO)
@@ -91,7 +92,6 @@ def get_today_birthdays():
     rows = cur.fetchall()
     conn.close()
     return rows
-
 
 # --- Telegram Bot ---
 bot = Bot(
@@ -172,8 +172,8 @@ async def bday_add(message: types.Message):
         if len(parts) < 3:
             await message.answer("⚠️ Формат: /bdayadd Имя ДД.ММ\nПример: /bdayadd Вася 01.10")
             return
-        name = parts[1]
-        date = parts[2]
+        name = " ".join(parts[1:-1])
+        date = parts[-1]
         add_birthday(name, date)
         await message.answer(f"✅ День рождения {name} ({date}) добавлен")
     except Exception as e:
@@ -187,22 +187,20 @@ async def bday_list(message: types.Message):
     else:
         text = "🎂 Дни рождения:\n"
         for name, date in rows:
-            text += f"- {name}: {date}\n"
+            text += f"- {name} 🎂 {date}\n"
         await message.answer(text)
 
 # --- Ежедневная проверка ДР в 00:00 ---
 async def check_birthdays():
     rows = get_today_birthdays()
-    if rows:
+    if rows and ADMIN_CHAT_ID != 0:
         text = "🎉 Сегодня день рождения у:\n"
         for name, date in rows:
-            text += f"- {name} ({date})\n"
+            text += f"- {name} 🎂 {date}\n"
         await bot.send_message(ADMIN_CHAT_ID, text)
-
 
 scheduler.add_job(check_birthdays, "cron", hour=0, minute=0)
 
-# --- Запуск бота ---
 # --- Запуск бота ---
 if __name__ == "__main__":
     import asyncio
@@ -210,7 +208,7 @@ if __name__ == "__main__":
     init_db()
 
     async def main():
-        scheduler.start()   # запускаем планировщик уже внутри цикла
+        scheduler.start()
         await dp.start_polling(bot)
 
     asyncio.run(main())
