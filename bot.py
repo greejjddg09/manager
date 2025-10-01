@@ -147,8 +147,11 @@ async def handle_expense(message: types.Message):
         await message.answer(f"⚠️ Ошибка: {e}")    
 
 # --- Погода ---
-@dp.message(F.text.startswith("/weather"))
 async def weather(message: types.Message):
+    if not OWM_API_KEY or not mgr:
+        await message.answer("⚠️ Погодный API-ключ не настроен. Добавь OWM_API_KEY в Railway → Settings → Variables.")
+        return
+
     try:
         city = message.text.replace("/weather", "").strip()
         if not city:
@@ -164,8 +167,8 @@ async def weather(message: types.Message):
         answer += f"🌡 Температура: {temp:.1f}°C"
 
         await message.answer(answer)
-    except Exception:
-        await message.answer("⚠️ Не удалось получить погоду. Проверь название города.")
+    except Exception as e:
+        await message.answer(f"⚠️ Не удалось получить погоду: {e}")
 
 # --- Дни рождения ---
 @dp.message(F.text.startswith("/bdayadd"))
