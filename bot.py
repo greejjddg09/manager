@@ -3,6 +3,7 @@ import re
 import os
 import sqlite3
 from datetime import datetime
+import json
 
 import gspread
 from aiogram import Bot, Dispatcher, types, F
@@ -22,7 +23,10 @@ from pyowm.utils.config import get_default_config
 # --- НАСТРОЙКИ ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+
+creds_json = os.getenv("SHEETS_CREDENTIALS")
+creds_dict = json.loads(creds_json)
+gc = gspread.service_account_from_dict(creds_dict)
 ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # твой chat_id (узнается через /id)
 OWM_API_KEY = os.getenv("OWM_API_KEY")
 
