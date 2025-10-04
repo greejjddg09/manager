@@ -12,11 +12,12 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from google.oauth2.service_account import Credentials
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
+
 
 from pyowm import OWM
 from pyowm.utils.config import get_default_config
