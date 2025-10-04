@@ -22,6 +22,8 @@ from googleapiclient.discovery import build
 from pyowm import OWM
 from pyowm.utils.config import get_default_config
 
+print("✅ Используется класс:", Credentials)
+
 # --- НАСТРОЙКИ ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
