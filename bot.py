@@ -65,8 +65,11 @@ def get_calendar_service():
     return build("calendar", "v3", credentials=creds)
 
 # --- Google Sheets ---
+# --- Google Sheets ---
+from google.oauth2 import service_account
+
 creds_json = os.getenv("SHEETS_CREDENTIALS")
-if creds_json is None:
+if not creds_json:
     raise ValueError("❌ Переменная SHEETS_CREDENTIALS не найдена. Добавь её в Railway → Settings → Variables.")
 
 try:
@@ -74,11 +77,18 @@ try:
 except json.JSONDecodeError as e:
     raise ValueError(f"❌ Ошибка чтения JSON: {e}")
 
-creds = Credentials.from_service_account_info(creds_dict)
+# Правильные права доступа
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
+# Авторизация сервисного аккаунта
+creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 gc = gspread.authorize(creds)
-print("✅ Авторизация Google Sheets прошла успешно.")
+
+SPREADSHEET_ID = "1tEkPxovVUmi3HwwnG-92LmsSB9RhqYczh_jrmlY-7KU"
 sh = gc.open_by_key(SPREADSHEET_ID)
-worksheet = sh.sheet1    
+worksheet = sh.sheet1
+
+print("✅ Авторизация Google Sheets прошла успешно.")
 
 # --- БД для дней рождений ---
 def init_db():
