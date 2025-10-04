@@ -12,12 +12,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from google.oauth2.service_account import Credentials
+# ✅ импортируем оба типа Credentials
+from google.oauth2.credentials import Credentials as UserCredentials
+from google.oauth2.service_account import Credentials as ServiceCredentials
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-
 
 from pyowm import OWM
 from pyowm.utils.config import get_default_config
@@ -47,10 +48,11 @@ else:
 logging.basicConfig(level=logging.INFO)
 
 # --- Google Calendar auth ---
+# --- Google Calendar auth ---
 def get_calendar_service():
     creds = None
     if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+        creds = UserCredentials.from_authorized_user_file("token.json", SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -58,7 +60,6 @@ def get_calendar_service():
         else:
             flow = InstalledAppFlow.from_client_secrets_file("calendar_credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
-
         with open("token.json", "w") as token:
             token.write(creds.to_json())
 
