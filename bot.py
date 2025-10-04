@@ -60,7 +60,18 @@ def get_calendar_service():
     return build("calendar", "v3", credentials=creds)
 
 # --- Google Sheets ---
-gc = gspread.service_account(filename="sheets_credentials.json")
+creds_json = os.getenv("SHEETS_CREDENTIALS")
+if creds_json is None:
+    raise ValueError("❌ Переменная SHEETS_CREDENTIALS не найдена. Добавь её в Railway → Settings → Variables.")
+
+try:
+    creds_dict = json.loads(creds_json)
+except json.JSONDecodeError as e:
+    raise ValueError(f"❌ Ошибка чтения JSON: {e}")
+
+creds = Credentials.from_service_account_info(creds_dict)
+gc = gspread.authorize(creds)
+print("✅ Авторизация Google Sheets прошла успешно.")
 sh = gc.open_by_key(SPREADSHEET_ID)
 worksheet = sh.sheet1    
 
