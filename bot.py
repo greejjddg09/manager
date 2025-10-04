@@ -27,7 +27,12 @@ from pyowm.utils.config import get_default_config
 
 # --- НАСТРОЙКИ ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events"
+]
+
 SPREADSHEET_ID = "1tEkPxovVUmi3HwwnG-92LmsSB9RhqYczh_jrmlY-7KU"
 
 creds_json = os.getenv("SHEETS_CREDENTIALS")
