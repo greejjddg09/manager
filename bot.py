@@ -26,7 +26,7 @@ print("✅ Используется класс:", Credentials)
 
 # --- НАСТРОЙКИ ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_ID = "1tEkPxovVUmi3HwwnG-92LmsSB9RhqYczh_jrmlY-7KU"
 
 creds_json = os.getenv("SHEETS_CREDENTIALS")
