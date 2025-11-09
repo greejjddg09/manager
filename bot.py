@@ -203,7 +203,7 @@ async def weather(message: types.Message):
         answer = f"🌍 Город: {city}\n"
         answer += f"☁️ Погода: {w.detailed_status}\n"
         answer += f"🌡 Температура: {temp:.1f}°C\n"
-        answer += f"🌡 Температура: {humidity:.1f}%"
+        answer += f"💦 Влажность: {humidity:.1f}%"
 
         await message.answer(answer)
     except Exception as e:
