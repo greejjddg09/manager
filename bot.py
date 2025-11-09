@@ -198,10 +198,12 @@ async def weather(message: types.Message):
         observation = mgr.weather_at_place(city)
         w = observation.weather
         temp = w.temperature("celsius")["temp"]
+        humidity = w.humidity 
 
         answer = f"🌍 Город: {city}\n"
         answer += f"☁️ Погода: {w.detailed_status}\n"
         answer += f"🌡 Температура: {temp:.1f}°C"
+        answer += f"🌡 Температура: {humidity:.1f}°C"
 
         await message.answer(answer)
     except Exception as e:
